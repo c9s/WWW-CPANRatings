@@ -9,7 +9,13 @@ ok( $r );
 ok( $r->prepare );
 ok( $r->rating_data );
 
-my $ret;
-ok( $ret = $r->get_reviews('Moose') );
+my @reviews;
+ok( @reviews = $r->get_reviews('Moose') );
+
+for ( @reviews ) {
+    ok( $_->{dist_name} );
+    ok( $_->{user} );
+    ok( $_->{user_link} );
+}
 
 done_testing;
