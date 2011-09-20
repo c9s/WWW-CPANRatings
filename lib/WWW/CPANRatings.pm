@@ -68,7 +68,7 @@ sub rating_data {
     return $self->{rating_data};
 }
 
-sub get_rating {
+sub get_ratings {
     my ($self,$distname) = @_;
     return $self->{rating_data}->{ $distname };
 }
@@ -152,7 +152,9 @@ WWW::CPANRatings - parsing CPANRatings data
     my $r = WWW::CPANRatings->new;
     $r->prepare;   # download cpanrating csv file and build the data...
 
-    $r->rating_data;  # get rating data.
+    my $all_ratings = $r->rating_data;  # get rating data.
+
+    my $ratings = $r->get_ratings( 'Moose' );  # get Moose rating scores.
 
     my @reviews = $r->get_reviews( 'Moose' );  # parse review text from cpanratings.perl.org.
 
@@ -177,7 +179,7 @@ Download/Parse csv rating data.
 
 Get csv rating data.
 
-=head2 RatingData | HashRef = $r->get_rating( DistName | String )
+=head2 RatingData | HashRef = $r->get_ratings( DistName | String )
 
 Get rating data of a distribution
 
