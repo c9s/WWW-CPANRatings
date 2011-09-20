@@ -30,15 +30,15 @@ WWW::CPANRatings - parsing CPANRatings data
 
 Download/Parse csv rating data.
 
-## AllRatingData|HashRef = $r->rating_data()
+## AllRatingData | HashRef = $r->rating_data()
 
 Get csv rating data.
 
-## RatingData|HashRef = $r->get_rating( DistName|String )
+## RatingData | HashRef = $r->get_rating( DistName | String )
 
 Get rating data of a distribution
 
-## Reviews|Array = $r->get_reviews( DistName|String )
+## Reviews | Array = $r->get_reviews( DistName | String )
 
 Get distribution reviews (including text, user, timestamp)
 
