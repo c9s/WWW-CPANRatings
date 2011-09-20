@@ -70,6 +70,7 @@ sub rating_data {
 
 sub get_ratings {
     my ($self,$distname) = @_;
+    $distname =~ s/::/-/g;
     return $self->{rating_data}->{ $distname };
 }
 
