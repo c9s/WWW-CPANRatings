@@ -14,8 +14,7 @@ Text::CSV_PP
 );
 
 tests 't/*.t';
-
-readme_markdown_from_pod 'lib/WWW/CPANRatings.pm';
+readme_markdown_from 'lib/WWW/CPANRatings.pm';
 
 
 author_tests 'xt';

@@ -186,13 +186,10 @@ PERL_ARCHIVE       =
 PERL_ARCHIVE_AFTER = 
 
 
-TO_INST_PM = cpanratings2.pl \
-	lib/WWW/CPANRatings.pm
+TO_INST_PM = lib/WWW/CPANRatings.pm
 
 PM_TO_BLIB = lib/WWW/CPANRatings.pm \
-	blib/lib/WWW/CPANRatings.pm \
-	cpanratings2.pl \
-	$(INST_LIB)/WWW/cpanratings2.pl
+	blib/lib/WWW/CPANRatings.pm
 
 
 # --- MakeMaker platform_constants section:
@@ -792,8 +789,7 @@ ppd :
 
 pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
-	  lib/WWW/CPANRatings.pm blib/lib/WWW/CPANRatings.pm \
-	  cpanratings2.pl $(INST_LIB)/WWW/cpanratings2.pl 
+	  lib/WWW/CPANRatings.pm blib/lib/WWW/CPANRatings.pm 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
 
@@ -824,7 +820,3 @@ grok ::
 distsign ::
 	cpansign -s
 
-distclean :: license_clean
-
-license_clean:
-	$(RM_F) README.mkdn
