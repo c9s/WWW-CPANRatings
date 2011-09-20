@@ -2,7 +2,16 @@ use inc::Module::Install;
 name 'WWW-CPANRatings';
 all_from 'lib/WWW/CPANRatings.pm';
 
-# requires '';
+requires($_ => 0) for qw(
+List::Util
+LWP::Simple
+DateTime::Format::DateParse
+HTML::TokeParser::Simple
+URI
+Web::Scraper
+JSON::XS
+Text::CSV_PP
+);
 
 tests 't/*.t';
 

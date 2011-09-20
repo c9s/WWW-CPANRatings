@@ -3,10 +3,9 @@ use strict;
 use warnings;
 our $VERSION = '0.01';
 
-use Data::Dumper;
-use Data::Dump;
 use List::Util qw(sum);
 use LWP::Simple;
+use DateTime::Format::DateParse;
 use HTML::TokeParser::Simple;
 use URI;
 use Web::Scraper;
@@ -46,7 +45,8 @@ sub prepare {
 
     # drop first 2 lines
     splice @lines,0,2;
-    my @rating_data;
+    my %rating_data;
+
     for my $line ( @lines ) {
         chomp($line);
         my $status  = $csv->parse($line);
@@ -54,14 +54,13 @@ sub prepare {
         my ($dist,$rating,$review_count) = $csv->fields();
 
         # say $dist, $rating, $review_count;
-        push @rating_data, { 
+        $rating_data{ $dist } = {
             dist => $dist,
             rating => $rating,
             review_cnt => $review_count,
         };
     }
-    $self->{rating_data} = \@rating_data;
-    return @rating_data;
+    return $self->{rating_data} = \%rating_data;
 }
 
 sub rating_data { 
@@ -69,8 +68,13 @@ sub rating_data {
     return $self->{rating_data};
 }
 
+sub get_rating {
+    my ($self,$distname) = @_;
+    return $self->{rating_data}->{ $distname };
+}
+
 # dist_name format 
-sub get_module_reviews {
+sub get_reviews {
     my ($self,$modname) = @_;
     my $distname = $modname;
     $distname =~ s/::/-/g;
@@ -78,7 +82,8 @@ sub get_module_reviews {
     my $url = $base_url . $distname;
     my $content = get($url);
     return unless $content =~ /$modname reviews/;
-    my %json_hash = $self->parse_review_page($content);
+    my $result = $self->parse_review_page($content);
+    return @{ $result->{reviews} };
 }
 
 
@@ -102,6 +107,10 @@ sub parse_review_page {
             process '.review_header a', 
                     dist_link => '@href',
                     dist_name => 'TEXT';
+
+            process '.review_header',
+                    header => 'TEXT';
+
             process '.review_text', body => 'TEXT';
             process '.review_attribution' ,
                 'attrs' => 'TEXT';
@@ -111,6 +120,20 @@ sub parse_review_page {
         };
     };
     my $res = $rating_scraper->scrape( URI->new("http://cpanratings.perl.org/dist/Moose") );
+
+    # post process
+
+    for my $review ( @{ $res->{reviews} } ) {
+        if( $review->{header} =~ m{^\s*([a-zA-Z:]+)\s+\(([0-9.]+)\)\s*$} ) {
+            $review->{version} = $2;
+            say $review->{version};
+        }
+
+        if( $review->{attrs} =~ m{\s([0-9-T:]+)\s*$} ) {
+            $review->{timestamp} = 
+                DateTime::Format::DateParse->parse_datetime( $1 );
+        }
+    }
     return $res;
 }
 
@@ -126,10 +149,41 @@ WWW::CPANRatings - parsing CPANRatings data
 
     use WWW::CPANRatings;
 
+    my $r = WWW::CPANRatings->new;
+    $r->prepare;   # download cpanrating csv file and build the data...
+
+    $r->rating_data;  # get rating data.
+
+    my @reviews = $r->get_reviews( 'Moose' );  # parse review text from cpanratings.perl.org.
+
+    for my $r ( @reviews ) {
+        $r->{dist_name};
+        $r->{dist_link};
+        $r->{version}
+        $r->{user};
+        $r->{user_link};
+        $r->{timestamp};  # DateTime object.
+    }
 
 =head1 DESCRIPTION
 
-WWW::CPANRatings is
+=head1 METHODS
+
+=head2 $r->prepare()
+
+Download/Parse csv rating data.
+
+=head2 AllRatingData|HashRef = $r->rating_data()
+
+Get csv rating data.
+
+=head2 RatingData|HashRef = $r->get_rating( DistName|String )
+
+Get rating data of a distribution
+
+=head2 Reviews|Array = $r->get_reviews( DistName|String )
+
+Get distribution reviews (including text, user, timestamp)
 
 =head1 AUTHOR
 

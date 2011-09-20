@@ -2,8 +2,6 @@
 use Test::More;
 use WWW::CPANRatings;
 
-
-
 my $r = WWW::CPANRatings->new;
 ok( $r );
 
@@ -12,6 +10,6 @@ ok( $r->prepare );
 ok( $r->rating_data );
 
 my $ret;
-ok( $ret = $r->get_module_reviews('Moose') );
+ok( $ret = $r->get_reviews('Moose') );
 
 done_testing;
