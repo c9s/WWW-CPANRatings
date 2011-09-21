@@ -83,6 +83,7 @@ sub get_reviews {
     my $base_url = "http://cpanratings.perl.org/dist/";
     my $url = $base_url . $distname;
     my $content = get($url);
+    return unless $content;
     return unless $content =~ /$modname reviews/;
     my $result = $self->parse_review_page($content);
     return @{ $result->{reviews} };
