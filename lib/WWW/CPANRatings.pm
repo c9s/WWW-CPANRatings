@@ -156,7 +156,7 @@ sub parse_review_page {
 
 sub get_all_reviews {
     my $self = shift;
-    my $all_ratings = $r->rating_data;
+    my $all_ratings = $self->rating_data;
     while( my( $distname,$ratings) = each %$all_ratings ) {
         # $ratings->{review_cnt};
         # $ratings->{dist};
