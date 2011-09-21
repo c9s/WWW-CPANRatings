@@ -14,6 +14,12 @@ WWW::CPANRatings - parsing CPANRatings data
 
     my @reviews = $r->get_reviews( 'Moose' );  # parse review text from cpanratings.perl.org.
 
+
+
+
+
+
+
     for my $r ( @reviews ) {
         $r->{dist};
         $r->{dist_link};
@@ -43,6 +49,10 @@ Get rating data of a distribution
 ## Reviews | Array = $r->get_reviews( DistName | String )
 
 Get distribution reviews (including text, user, timestamp)
+
+## $r->parse_all_dists_reviews
+
+Get reviews from all distributions.
 
 # AUTHOR
 
