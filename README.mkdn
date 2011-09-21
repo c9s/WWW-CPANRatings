@@ -7,7 +7,6 @@ WWW::CPANRatings - parsing CPANRatings data
     use WWW::CPANRatings;
 
     my $r = WWW::CPANRatings->new;
-    $r->prepare;   # download cpanrating csv file and build the data...
 
     my $all_ratings = $r->rating_data;  # get rating data.
 
@@ -28,7 +27,7 @@ WWW::CPANRatings - parsing CPANRatings data
 
 # METHODS
 
-## $r->prepare()
+## $r->fetch_ratings()
 
 Download/Parse csv rating data.
 
