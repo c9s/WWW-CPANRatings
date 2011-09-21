@@ -178,7 +178,8 @@ WWW::CPANRatings - parsing CPANRatings data
         $r->{version}
         $r->{user};
         $r->{user_link};
-        $r->{timestamp};  # DateTime object.
+        $r->{created_on};  # DateTime object.
+        $r->{ratings};
     }
 
 =head1 DESCRIPTION
