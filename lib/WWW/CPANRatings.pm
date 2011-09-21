@@ -4,7 +4,7 @@ use warnings;
 our $VERSION = '0.02';
 
 use List::Util qw(sum);
-use LWP::Simple;
+use LWP::UserAgent;
 use DateTime::Format::DateParse;
 use HTML::TokeParser::Simple;
 use URI;
@@ -16,9 +16,25 @@ use feature 'say';
 sub new { 
     my $class = shift;
     my $args = shift || {};
-    bless $args,$class;
+    my $self = bless $args,$class;
+    $self->setup_request(sub{
+        my $url = shift;
+        my $ua = LWP::UserAgent->new;
+        my $response = $ua->get( $url );
+        return $response->decoded_content;
+    });
+    return $self;
 }
 
+sub setup_request {
+    my ($self,$cb) = @_;
+    $self->{requester} = $cb;
+}
+
+sub request {
+    my ($self,$url) = @_;
+    return $self->{requester}->( $url );
+}
 
 sub fetch_ratings {
     my $self = shift;
@@ -37,7 +53,7 @@ sub fetch_ratings {
     }
 
     unless ( $text ) {
-        $text = get('http://cpanratings.perl.org/csv/all_ratings.csv');
+        $text = $self->request('http://cpanratings.perl.org/csv/all_ratings.csv');
     }
 
     my @lines = split /\n/,$text;
@@ -82,7 +98,7 @@ sub get_reviews {
     $distname =~ s/::/-/g;
     my $base_url = "http://cpanratings.perl.org/dist/";
     my $url = $base_url . $distname;
-    my $content = get($url);
+    my $content = $self->request($url);
     return unless $content;
     return unless $content =~ /$modname reviews/;
     my $result = $self->parse_review_page($content);
@@ -154,6 +170,7 @@ sub parse_review_page {
     }
     return $res;
 }
+
 
 sub get_all_reviews {
     my $self = shift;
