@@ -50,7 +50,7 @@ Get rating data of a distribution
 
 Get distribution reviews (including text, user, timestamp)
 
-## $r->parse_all_dists_reviews
+## $r->get_all_reviews
 
 Get reviews from all distributions.
 
