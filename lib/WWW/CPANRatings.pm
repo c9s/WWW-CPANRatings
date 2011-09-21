@@ -154,6 +154,17 @@ sub parse_review_page {
     return $res;
 }
 
+sub parse_all_dists_reviews {
+    my $self = shift;
+    my $all_ratings = $r->rating_data;
+    while( my( $distname,$ratings) = each %$all_ratings ) {
+        # $ratings->{review_cnt};
+        # $ratings->{dist};
+        # $ratings->{rating};
+        $ratings->{reviews} = $self->get_reviews( $ratings->{dist} );
+    }
+    return $all_ratings;
+}
 
 1;
 __END__
@@ -173,6 +184,9 @@ WWW::CPANRatings - parsing CPANRatings data
     my $ratings = $r->get_ratings( 'Moose' );  # get Moose rating scores.
 
     my @reviews = $r->get_reviews( 'Moose' );  # parse review text from cpanratings.perl.org.
+
+
+
 
     for my $r ( @reviews ) {
         $r->{dist};
@@ -203,6 +217,10 @@ Get rating data of a distribution
 =head2 Reviews | Array = $r->get_reviews( DistName | String )
 
 Get distribution reviews (including text, user, timestamp)
+
+=head2 $r->parse_all_dists_reviews
+
+Get reviews from all distributions.
 
 =head1 AUTHOR
 
