@@ -162,7 +162,7 @@ sub get_all_reviews {
         # $ratings->{review_cnt};
         # $ratings->{dist};
         # $ratings->{rating};
-        $ratings->{reviews} = $self->get_reviews( $ratings->{dist} );
+        $ratings->{reviews} = [ $self->get_reviews( $ratings->{dist} ) ];
     }
     return $all_ratings;
 }
