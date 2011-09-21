@@ -154,7 +154,7 @@ sub parse_review_page {
     return $res;
 }
 
-sub parse_all_dists_reviews {
+sub get_all_reviews {
     my $self = shift;
     my $all_ratings = $r->rating_data;
     while( my( $distname,$ratings) = each %$all_ratings ) {
@@ -218,7 +218,7 @@ Get rating data of a distribution
 
 Get distribution reviews (including text, user, timestamp)
 
-=head2 $r->parse_all_dists_reviews
+=head2 $r->get_all_reviews
 
 Get reviews from all distributions.
 
