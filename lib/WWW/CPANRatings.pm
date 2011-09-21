@@ -141,8 +141,8 @@ sub parse_review_page {
             $review->{version} = $2;
         }
 
-        $reviews->{dist} =~ s{^\s*}{};
-        $reviews->{dist} =~ s{\s*$}{};
+        $review->{dist} =~ s{^\s*}{};
+        $review->{dist} =~ s{\s*$}{};
 
         if( $review->{attrs} =~ m{([0-9-T:]+)\s*$} ) {
             $review->{created_on} = 
