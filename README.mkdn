@@ -15,12 +15,13 @@ WWW::CPANRatings - parsing CPANRatings data
     my @reviews = $r->get_reviews( 'Moose' );  # parse review text from cpanratings.perl.org.
 
     for my $r ( @reviews ) {
-        $r->{dist_name};
+        $r->{dist};
         $r->{dist_link};
         $r->{version}
         $r->{user};
         $r->{user_link};
-        $r->{timestamp};  # DateTime object.
+        $r->{created_on};  # DateTime object.
+        $r->{ratings};
     }
 
 # DESCRIPTION
