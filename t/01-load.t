@@ -12,9 +12,14 @@ my @reviews;
 ok( @reviews = $r->get_reviews('Moose') );
 
 for ( @reviews ) {
-    ok( $_->{dist_name} );
+    ok( $_->{dist} );
+    ok( $_->{dist_link} );
     ok( $_->{user} );
     ok( $_->{user_link} );
+    ok( $_->{version} );
+    ok( $_->{ratings} );
+    ok( $_->{created_on} );
+    is( ref($_->{created_on}), 'DateTime' );
 }
 
 done_testing;

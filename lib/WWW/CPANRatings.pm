@@ -96,24 +96,29 @@ sub get_reviews {
 #                   'body' => ' Moose got me laid. Could you ask anything more of a CPAN module? ',
 #                   'user_link' => bless( do{\(my $o = 'http://cpanratings.perl.org/user/funguy')}, 'URI::http' ),
 #                   'attrs' => 'Fun Guy - 2011-04-12T14:30:46 ',
-#                   'dist_name' => ' Moose',
 #                   'user' => 'Fun Guy',
+#                   'dist' => ' Moose',
 #                   'dist_link' => bless( do{\(my $o = 'http://search.cpan.org/dist/Moose/')}, 'URI::http' )
 #                 },
 
-sub parse_review_page {
-    my ($self,$content) = @_;
 
-    my $rating_scraper = scraper {
+
+sub rating_scraper { 
+    my $self = shift;
+    return scraper {
         process '.review' => 'reviews[]' => scraper {
             process '.review_header a', 
                     dist_link => '@href',
-                    dist_name => 'TEXT';
+                    dist => 'TEXT';
 
             process '.review_header',
                     header => 'TEXT';
 
+            process '.review_header img',
+                    ratings => '@alt';
+
             process '.review_text', body => 'TEXT';
+
             process '.review_attribution' ,
                 'attrs' => 'TEXT';
             process '.review_attribution a' , 
@@ -121,6 +126,12 @@ sub parse_review_page {
                 'user_link' => '@href';
         };
     };
+}
+
+sub parse_review_page {
+    my ($self,$content) = @_;
+
+    my $rating_scraper = $self->rating_scraper;
     my $res = $rating_scraper->scrape( URI->new("http://cpanratings.perl.org/dist/Moose") );
 
     # post process
@@ -131,10 +142,12 @@ sub parse_review_page {
             say $review->{version};
         }
 
-        if( $review->{attrs} =~ m{\s([0-9-T:]+)\s*$} ) {
-            $review->{timestamp} = 
+        if( $review->{attrs} =~ m{([0-9-T:]+)\s*$} ) {
+            $review->{created_on} = 
                 DateTime::Format::DateParse->parse_datetime( $1 );
         }
+
+        delete $review->{attrs};
     }
     return $res;
 }
@@ -160,7 +173,7 @@ WWW::CPANRatings - parsing CPANRatings data
     my @reviews = $r->get_reviews( 'Moose' );  # parse review text from cpanratings.perl.org.
 
     for my $r ( @reviews ) {
-        $r->{dist_name};
+        $r->{dist};
         $r->{dist_link};
         $r->{version}
         $r->{user};
