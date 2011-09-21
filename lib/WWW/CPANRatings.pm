@@ -139,8 +139,10 @@ sub parse_review_page {
     for my $review ( @{ $res->{reviews} } ) {
         if( $review->{header} =~ m{^\s*([a-zA-Z:]+)\s+\(([0-9.]+)\)\s*$} ) {
             $review->{version} = $2;
-            say $review->{version};
         }
+
+        $reviews->{dist} =~ s{^\s*}{};
+        $reviews->{dist} =~ s{\s*$}{};
 
         if( $review->{attrs} =~ m{([0-9-T:]+)\s*$} ) {
             $review->{created_on} = 
