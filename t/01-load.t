@@ -17,7 +17,7 @@ for ( @reviews ) {
     ok( $_->{user} );
     ok( $_->{user_link} );
     ok( $_->{version} );
-    ok( $_->{ratings} );
+    # ok( $_->{ratings} );
     ok( $_->{created_on} );
     is( ref($_->{created_on}), 'DateTime' );
 }
