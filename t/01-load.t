@@ -4,10 +4,9 @@ use WWW::CPANRatings;
 
 my $r = WWW::CPANRatings->new;
 ok( $r );
-
-
-ok( $r->prepare );
 ok( $r->rating_data );
+
+ok( $r->get_ratings('Plack') );
 
 my @reviews;
 ok( @reviews = $r->get_reviews('Moose') );

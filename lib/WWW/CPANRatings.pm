@@ -20,7 +20,7 @@ sub new {
 }
 
 
-sub prepare {
+sub fetch_ratings {
     my $self = shift;
     my $arg = shift;
 
@@ -65,13 +65,14 @@ sub prepare {
 
 sub rating_data { 
     my $self = shift;
+    $self->fetch_ratings unless $self->{rating_data};
     return $self->{rating_data};
 }
 
 sub get_ratings {
     my ($self,$distname) = @_;
     $distname =~ s/::/-/g;
-    return $self->{rating_data}->{ $distname };
+    return $self->rating_data->{ $distname };
 }
 
 # dist_name format 
@@ -151,7 +152,6 @@ WWW::CPANRatings - parsing CPANRatings data
     use WWW::CPANRatings;
 
     my $r = WWW::CPANRatings->new;
-    $r->prepare;   # download cpanrating csv file and build the data...
 
     my $all_ratings = $r->rating_data;  # get rating data.
 
@@ -172,7 +172,7 @@ WWW::CPANRatings - parsing CPANRatings data
 
 =head1 METHODS
 
-=head2 $r->prepare()
+=head2 $r->fetch_ratings()
 
 Download/Parse csv rating data.
 
